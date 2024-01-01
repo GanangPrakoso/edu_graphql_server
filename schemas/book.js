@@ -39,7 +39,8 @@ type Mutation {
 const resolvers = {
   Query: {
     books: async (_, __, contextValue) => {
-      const user = contextValue.authentication();
+      console.log(contextValue.headers, "<<< halo req");
+      const user = await contextValue.authentication();
       console.log(user, "<<<< USER");
 
       return arrBooks;

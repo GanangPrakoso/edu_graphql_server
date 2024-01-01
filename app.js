@@ -18,9 +18,10 @@ const server = new ApolloServer({
 
 startStandaloneServer(server, {
   listen: { port: 3000 },
-  context: ({ req }) => {
+  context: async ({ req }) => {
     return {
-      authentication: function () {
+      headers: req.headers,
+      authentication: async function () {
         let token = req.headers.authorization;
         if (!token) {
           throw new GraphQLError("please provide token", {
