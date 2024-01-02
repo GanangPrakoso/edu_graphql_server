@@ -6,15 +6,11 @@ const {
   resolvers: bookResolvers,
 } = require("./schemas/book");
 
-const {
-  typeDefs: authorTypeDefs,
-  resolvers: authorResolvers,
-} = require("./schemas/author");
 const { connect } = require("./config/mongoConnection");
 
 const server = new ApolloServer({
-  typeDefs: [bookTypeDefs, authorTypeDefs],
-  resolvers: [authorResolvers, bookResolvers],
+  typeDefs: [bookTypeDefs],
+  resolvers: [bookResolvers],
 });
 
 async function startServer() {
