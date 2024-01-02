@@ -1,3 +1,6 @@
+const { ObjectId } = require("mongodb");
+const { connect } = require("../config/mongoConnection");
+
 const posts = [
   {
     userId: "1",
@@ -18,3 +21,21 @@ const posts = [
     tags: ["curious"],
   },
 ];
+
+async function seedPosts() {
+  try {
+    const dataPosts = posts.map((el) => {
+      el.userId = new ObjectId(el.userId); //! ObjectId important for reference field
+      return el;
+    });
+
+    const db = await connect();
+    await db.collection("posts").insertMany(dataPosts);
+
+    console.log("success seed posts");
+  } catch (error) {
+    console.log(error, "<<< error seed posts");
+  }
+}
+
+seedPosts();
