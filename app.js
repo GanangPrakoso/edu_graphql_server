@@ -10,44 +10,44 @@ const {
   typeDefs: authorTypeDefs,
   resolvers: authorResolvers,
 } = require("./schemas/author");
+const { connect } = require("./config/mongoConnection");
 
 const server = new ApolloServer({
   typeDefs: [bookTypeDefs, authorTypeDefs],
   resolvers: [authorResolvers, bookResolvers],
 });
 
-startStandaloneServer(server, {
-  listen: { port: 3000 },
-  context: async ({ req }) => {
-    return {
-      headers: req.headers,
-      authentication: async function () {
-        let token = req.headers.authorization;
-        if (!token) {
-          throw new GraphQLError("please provide token", {
-            extensions: {
-              code: "NOT_AUTHENTENTICATED",
-              extensions: {
-                code: 401,
-              },
-            },
-          });
-        }
+async function startServer() {
+  try {
+    await connect();
 
-        return { user: { id: 1 } };
+    const { url } = await startStandaloneServer(server, {
+      listen: { port: 3000 },
+      context: async ({ req }) => {
+        return {
+          authentication: async function () {
+            let token = req.headers.authorization;
+            if (!token) {
+              throw new GraphQLError("please provide token", {
+                extensions: {
+                  code: "NOT_AUTHENTENTICATED",
+                  extensions: {
+                    code: 401,
+                  },
+                },
+              });
+            }
+
+            return { user: { id: 1 } };
+          },
+        };
       },
-    };
-  },
-}).then(({ url }) => {
-  console.log(`🚀  Server ready at: ${url}`);
-});
+    });
 
-// async function startServer(params) {
-//   const { url } = await startStandaloneServer(server, {
-//     listen: { port: 3000 },
-//   });
+    console.log(`🚀  Server ready at: ${url}`);
+  } catch (error) {
+    console.log(error);
+  }
+}
 
-//   console.log(`🚀  Server ready at: ${url}`);
-// }
-
-// startServer();
+startServer();

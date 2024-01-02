@@ -1,25 +1,12 @@
-const arrBooks = [
-  {
-    id: 1,
-    title: "The Awakening",
-    author: "Kate Chopin",
-    imageUrl: "www.gambar-gambir.com",
-  },
-  {
-    id: 2,
-    title: "City of Glass",
-    author: "Paul Auster",
-    imageUrl: "www.gambar-gambir.com",
-  },
-];
+const { getDb } = require("../config/mongoConnection");
+const Book = require("../models/book");
 
 const typeDefs = `#graphql
 
 type Book {
-  id: ID!
+  _id: ID!
   title: String
   author: String
-  imageUrl: String
 }
 
 
@@ -28,38 +15,66 @@ type Book {
 # case, the "books" query returns an array of zero or more Books (defined above).
 type Query {
   books: [Book]
-  bookById(id: ID!): Book
+  bookById(_id: ID!): Book
+}
+
+input BookInput {
+  title: String!
+  author: String!
+}
+
+input UpdateBookInput {
+  _id: ID!
+  author: String
+  title: String
 }
 
 type Mutation {
-  createBook(title: String!, author: String!, imageUrl: String!): Book
+  createBook(bookInput: BookInput!): Book
+  deleteBook(_id: ID!): String
+  updateBookById(updateInput: UpdateBookInput!): String
 }
 `;
 
 const resolvers = {
   Query: {
     books: async (_, __, contextValue) => {
-      console.log(contextValue.headers, "<<< halo req");
-      const user = await contextValue.authentication();
-      console.log(user, "<<<< USER");
+      // const user = await contextValue.authentication();
 
-      return arrBooks;
+      const findBooks = await Book.getBooks();
+      return findBooks;
     },
-    bookById: (_, args) => {
-      console.log(args, "<<<< ini args sob");
-
-      return arrBooks.find((el) => el.id == args.id);
+    bookById: async (_, args) => {
+      const findBook = await Book.findBookById(args._id);
+      return findBook;
     },
   },
 
   Mutation: {
-    createBook: (_, args) => {
-      // console.log({ args });
-      const { title, author, imageUrl } = args;
-      const newBook = { ...args, id: arrBooks.length + 1 };
+    createBook: async (_, args) => {
+      let newBook = { ...args.bookInput };
 
-      arrBooks.push(newBook);
+      await Book.createBook(newBook);
+
+      //? it really return the new created document to previous variable
+      console.log(newBook, "after create");
+
       return newBook;
+    },
+
+    deleteBook: async (_, args) => {
+      const deleteById = await Book.deleteById(args._id);
+      console.log(deleteById, "<<<");
+
+      return `Success delete id ${args._id}`;
+    },
+
+    updateBookById: async (_, args) => {
+      let data = { ...args.updateInput };
+      delete data._id;
+
+      await Book.updateBookById(args.updateInput._id, data);
+      return `Success update id ${args.updateInput._id}`;
     },
   },
 };
