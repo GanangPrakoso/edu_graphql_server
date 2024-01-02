@@ -1,16 +1,27 @@
 const { ApolloServer } = require("@apollo/server");
 const { startStandaloneServer } = require("@apollo/server/standalone");
-const { GraphQLError } = require("graphql");
+const authentication = require("./middlewares/authentication");
+
 const {
   typeDefs: bookTypeDefs,
   resolvers: bookResolvers,
 } = require("./schemas/book");
 
+const {
+  typeDefs: postTypeDefs,
+  resolvers: postResolvers,
+} = require("./schemas/post");
+
+const {
+  typeDefs: userTypeDefs,
+  resolvers: userResolvers,
+} = require("./schemas/user");
+
 const { connect } = require("./config/mongoConnection");
 
 const server = new ApolloServer({
-  typeDefs: [bookTypeDefs],
-  resolvers: [bookResolvers],
+  typeDefs: [bookTypeDefs, postTypeDefs, userTypeDefs],
+  resolvers: [bookResolvers, postResolvers, userResolvers],
 });
 
 async function startServer() {
@@ -19,23 +30,9 @@ async function startServer() {
 
     const { url } = await startStandaloneServer(server, {
       listen: { port: 3000 },
-      context: async ({ req }) => {
+      context: async ({ req, res }) => {
         return {
-          authentication: async function () {
-            let token = req.headers.authorization;
-            if (!token) {
-              throw new GraphQLError("please provide token", {
-                extensions: {
-                  code: "NOT_AUTHENTENTICATED",
-                  extensions: {
-                    code: 401,
-                  },
-                },
-              });
-            }
-
-            return { user: { id: 1 } };
-          },
+          authentication: async () => await authentication(req),
         };
       },
     });

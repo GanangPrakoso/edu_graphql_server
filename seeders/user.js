@@ -1,3 +1,6 @@
+const bcrypt = require("bcryptjs");
+const { connect } = require("../config/mongoConnection");
+
 const users = [
   {
     username: "user1",
@@ -18,3 +21,22 @@ const users = [
     },
   },
 ];
+
+async function seedUsers() {
+  try {
+    const dataUser = users.map((el) => {
+      el.password = bcrypt.hashSync(el.password, 8);
+
+      return el;
+    });
+
+    const db = await connect();
+    await db.collection("users").insertMany(dataUser);
+
+    console.log("success seed users");
+  } catch (error) {
+    console.log(error, "<<<");
+  }
+}
+
+seedUsers();

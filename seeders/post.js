@@ -3,19 +3,19 @@ const { connect } = require("../config/mongoConnection");
 
 const posts = [
   {
-    userId: "1",
+    userId: "65945ec8c3a8a63c331bb1b8",
     title: "Hari ini saya pergi tamasya",
     caption: "lumayan seru",
     tags: ["holiday", "fun"],
   },
   {
-    userId: "1",
+    userId: "65945ec8c3a8a63c331bb1b8",
     title: "Hari ini saya ga kemana-mana walaupun libur",
     caption: "karena saya sakit",
     tags: ["holiday", "sick", "no_fun"],
   },
   {
-    userId: "1",
+    userId: "65945ec8c3a8a63c331bb1b8",
     title: "Andai aku jadi semut",
     caption: "penasaran aja",
     tags: ["curious"],
