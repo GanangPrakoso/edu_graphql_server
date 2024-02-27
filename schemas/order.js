@@ -25,7 +25,7 @@ const resolvers = {
     getUserOrder: async (_, args, context) => {
       const { db, authentication } = context;
 
-      const user = authentication();
+      const user = await authentication();
 
       const orderCollection = db.collection("orders");
 
