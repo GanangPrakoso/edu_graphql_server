@@ -1,5 +1,6 @@
 const { getDb } = require("../config/mongoConnection");
 const Book = require("../models/book");
+const redis = require("../config/redisConfig");
 
 const typeDefs = `#graphql
 
@@ -7,6 +8,7 @@ type Book {
   _id: ID!
   title: String
   author: String
+  stock: Int
 }
 
 
@@ -21,6 +23,7 @@ type Query {
 input BookInput {
   title: String!
   author: String!
+  stock: Int
 }
 
 input UpdateBookInput {
@@ -40,8 +43,15 @@ const resolvers = {
   Query: {
     books: async (_, __, contextValue) => {
       // const user = await contextValue.authentication();
+      const booksCache = await redis.get("books:all");
+      if (booksCache) {
+        console.log(booksCache, "<<<< oi oi");
+        return JSON.parse(booksCache);
+      }
 
       const findBooks = await Book.getBooks();
+
+      await redis.set("books:all", JSON.stringify(findBooks));
       return findBooks;
     },
     bookById: async (_, args) => {
@@ -58,6 +68,7 @@ const resolvers = {
 
       //? it really return the new created document to previous variable
       console.log(newBook, "after create");
+      await redis.del("books:all");
 
       return newBook;
     },

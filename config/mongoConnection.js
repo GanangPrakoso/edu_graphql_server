@@ -27,4 +27,4 @@ async function connect() {
   }
 }
 
-module.exports = { connect, getDb };
+module.exports = { connect, getDb, client };
