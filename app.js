@@ -17,6 +17,11 @@ const {
   resolvers: userResolvers,
 } = require("./schemas/user");
 
+const {
+  typeDefs: orderTypeDefs,
+  resolvers: orderResolvers,
+} = require("./schemas/order");
+
 const { connect } = require("./config/mongoConnection");
 
 const server = new ApolloServer({
@@ -26,12 +31,13 @@ const server = new ApolloServer({
 
 async function startServer() {
   try {
-    await connect();
+    const db = await connect();
 
     const { url } = await startStandaloneServer(server, {
       listen: { port: 3000 },
       context: async ({ req, res }) => {
         return {
+          db,
           authentication: async () => await authentication(req),
         };
       },
