@@ -1,17 +1,14 @@
-# GraphQL Server
+# Mongo Transaction and Cache
 
 ---
 
 ### What we gonna learn:
 
-- What is GraphQL?
-- Why GraphQL?
-- create server with GraphQL Apollo Server (use introspection)
-- Schema definition
-- Query
-- Mutation
-- Context
-- Separating Query & Mutation into files
+- What is transaction
+- how to implement mongo transaction
+- Redis?
+- ioredis
+- cache invalidation
 
 ---
 
