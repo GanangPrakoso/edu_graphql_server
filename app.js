@@ -26,7 +26,7 @@ const { connect } = require("./config/mongoConnection");
 
 const server = new ApolloServer({
   typeDefs: [bookTypeDefs, postTypeDefs, userTypeDefs, orderTypeDefs],
-  resolvers: [bookResolvers, postResolvers, userResolvers, orderTypeDefs],
+  resolvers: [bookResolvers, postResolvers, userResolvers, orderResolvers],
 });
 
 async function startServer() {
