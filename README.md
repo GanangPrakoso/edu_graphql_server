@@ -6,6 +6,7 @@
 
 - What is GraphQL?
 - Why GraphQL?
+- create server with GraphQL Apollo Server (use introspection)
 - Schema definition
 - Query
 - Mutation

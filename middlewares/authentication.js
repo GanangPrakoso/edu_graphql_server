@@ -23,6 +23,8 @@ async function authentication(req) {
       });
     }
 
+    console.log(findUser);
+
     return { userId: findUser._id };
   } catch (error) {
     throw error;

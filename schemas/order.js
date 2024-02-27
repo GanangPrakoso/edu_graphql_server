@@ -25,7 +25,7 @@ const resolvers = {
     getUserOrder: async (_, args, context) => {
       const { db, authentication } = context;
 
-      const user = authentication();
+      const user = await authentication();
 
       const orderCollection = db.collection("orders");
 
@@ -41,7 +41,9 @@ const resolvers = {
       const { db, authentication } = context;
       const { bookId, quantity } = args;
 
-      const user = authentication();
+      const user = await authentication();
+
+      console.log(user, "<<<<");
 
       const orderCollection = db.collection("orders");
       const bookCollection = db.collection("books");
@@ -49,6 +51,8 @@ const resolvers = {
       const findBook = await bookCollection.findOne({
         _id: new ObjectId(bookId),
       });
+
+      console.log(findBook, "<<<");
 
       if (findBook.stock < quantity)
         throw new Error("Book stock is not enough");
