@@ -19,7 +19,7 @@ const data = [
 async function seedBook(params) {
   try {
     const db = await connect();
-    await db.collection("books").insertMany(dataUser);
+    await db.collection("books").insertMany(data);
 
     console.log("success seed books");
   } catch (error) {

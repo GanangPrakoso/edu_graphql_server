@@ -19,7 +19,7 @@ function getDb() {
 
 async function connect() {
   try {
-    const database = client.db("lecture_db");
+    const database = client.db("mongo-transactions");
     db = database;
     return database;
   } catch (error) {
