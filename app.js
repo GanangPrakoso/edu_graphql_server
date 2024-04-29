@@ -27,6 +27,7 @@ const { connect } = require("./config/mongoConnection");
 const server = new ApolloServer({
   typeDefs: [bookTypeDefs, postTypeDefs, userTypeDefs, orderTypeDefs],
   resolvers: [bookResolvers, postResolvers, userResolvers, orderResolvers],
+  introspection: true, // supaya sandbox apollo bisa di akses saat production
 });
 
 async function startServer() {
